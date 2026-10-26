@@ -1,0 +1,17 @@
+# Entorno virtual
+.venv/
+venv/
+
+# Jupyter y Python
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Archivos del sistema y del editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Credenciales
+.env
