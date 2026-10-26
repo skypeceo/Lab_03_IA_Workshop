@@ -1,0 +1,18 @@
+{
+  "source": "Public F1 timing parsed with FastF1 3.5.3; real data, corrected Rival Pit Window v2",
+  "provenance": "Class package dated 2026-10-15 v2; this Lab03 subset contains only learning_v2.csv",
+  "seed": 414,
+  "rows": 72616,
+  "train": "2018–2021",
+  "development": "First eleven rounds of 2022",
+  "excluded": [
+    "remaining 2022",
+    "2023–2024 historical test",
+    "2026 external data/results"
+  ],
+  "caution": "Corrected retrospective dataset, not evidence of live feed latency or a prospective independent trial.",
+  "files": {
+    "learning_v2.csv": "6782cfca5940fbe7683c8b03cdb8e5a9f2990f426dc7b8f3182eec32cd7f0b3f"
+  },
+  "lab_version": "v3 pedagogical revision; data and scientific protocol unchanged"
+}

@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Lab 3 v3</title><style>.l3-wrap{font-family:Arial,sans-serif;color:#1A3A5C;max-width:1050px;margin:24px auto;line-height:1.5}.l3-wrap table{border-collapse:collapse;width:100%;font-size:14px}.l3-wrap th,.l3-wrap td{border:1px solid #ccc;padding:8px;text-align:left;vertical-align:top}.l3-wrap h1,.l3-wrap h2{color:#1A3A5C}.l3-wrap code{white-space:normal}</style><main class="l3-wrap"><h1>Lab 3 Model comparison and a defensible recommendation</h1>
+<p>IIT414W · 100 points · 6% NP · same pairs as Lab 2</p>
+<p>Due Thursday 29 October 2026 at 12:30, Santiago time. Submit one Canvas text entry per pair: both names, an instructor-accessible GitHub URL, final commit ID and notebook path.</p>
+<h2>How this lab builds on your previous work</h2>
+<p>In Lab 1 you checked data and compared simple prediction rules. In Lab 2 you changed one input while keeping the comparison conditions fixed. In Lab 3 you keep the inputs fixed and change one model setting. You will explain the result, examine its errors and write a recommendation for a reader who does not know machine learning. You are assessed on the evidence and reasoning behind that recommendation, including when your change performs worse.</p>
+<p>The prediction task also changes: Lab 2 used synthetic pre-race top-10 data; this lab reuses the real Rival Pit Window case from 16 October. At the end of a rival driver's lap L, predict whether that driver will enter the pits during their own next three laps. This is an observed entry, not an optimal pit-stop recommendation for your own car.</p>
+<p>The supplied code handles loading, preparation, fitting, threshold selection and exports. Your contribution is to check the protocol, specify one change, interpret actual results, identify three supported failure patterns and communicate a bounded decision. Running the unchanged starter does not complete the lab.</p>
+<h2>Start here and follow this order</h2>
+<p>Download and extract the complete ZIP. Open <code>README.md</code> for the environment check, then <code>Lab03_ModelComparison_Student_v3.ipynb</code>. All steps below have a matching notebook heading; do not create extra reports.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What you do</th>
+<th>Where your work belongs</th>
+<th>Ready when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 Check the prediction</td>
+<td>Explain target, prediction time, one allowed input and one future-known field kept out of X.</td>
+<td>“1. Define the prediction”</td>
+<td>Your answer refers to this dataset and its timing limits.</td>
+</tr>
+<tr>
+<td>2 Read the base comparison</td>
+<td>Reproduce two references and three learned models; interpret their development results and one train/dev gap.</td>
+<td>“2. Explain the common comparison”</td>
+<td>You distinguish windows, events, alerts and the two populations.</td>
+</tr>
+<tr>
+<td>3 Specify one change</td>
+<td>Record the parameter, old/new values, fixed conditions and expectation before the additional run.</td>
+<td><code>experiment_spec.md</code></td>
+<td>The expectation concerns the new candidate, not the already supplied base outputs.</td>
+</tr>
+<tr>
+<td>4 Run and explain</td>
+<td>Set the three fields in “3. Record your expectation before your additional run” (configuration block), run that configuration and compare with the unchanged parent.</td>
+<td>“4. Explain your additional result”</td>
+<td>At least two observed numbers support an explanation of the change.</td>
+</tr>
+<tr>
+<td>5 Examine errors</td>
+<td>Identify three distinct failure patterns in your candidate's development predictions, using the supplied context tables and cases.</td>
+<td>“5. Explain three distinct failure patterns” → “Your three entries”</td>
+<td>Each pattern has a count/denominator, example ID, consequence and next check.</td>
+</tr>
+<tr>
+<td>6 Recommend and submit</td>
+<td>Write a one-page memo, complete the common AI audit and truthful record, then restart and run all.</td>
+<td><code>memo.md</code>, <code>PROMPTS.md</code> and executed notebook</td>
+<td>Six systems produce twelve train/dev rows; outputs agree and the final commit is accessible.</td>
+</tr>
+</tbody>
+</table>
+<h2>Conditions that stay fixed</h2>
+<ul>
+<li>Train: 2018–2021. Development: first eleven rounds of 2022. Keep the included CSV unchanged, seed 414 and the nine permitted inputs in <code>FEATURES</code>. Preparation and models fit on train only.</li>
+<li>Five base systems: <code>never_alert</code>, <code>historical_baseline</code>, <code>tree</code>, <code>forest_all</code>, <code>forest_sqrt</code>. The two forests differ only in <code>max_features</code>. No additional model family, feature search or random split.</li>
+<li>Choose one additional change: <code>tree: max_depth 3 → 6</code>; <code>forest_sqrt: max_depth 6 → 3</code>; or <code>forest_sqrt: min_samples_leaf 30 → 100</code>. Do not try all three and silently report only the best. Disclose any additional trials already made.</li>
+<li>Do not use remaining 2022 races, 2023–2024 test data or 2026 results to choose models, features or thresholds. These files are excluded from the ZIP. No SHAP, calibration study, new data collection or paid tool is required.</li>
+</ul>
+<p>Choose one additional configuration. You may rerun that same configuration for debugging and Restart + Run All; report any other configurations already tried. Reproduction is not a new experimental choice.</p>
+<p>The base results are already available. Before running your additional candidate for the first time, record its expected effect in <code>experiment_spec.md</code>. Keep that expectation after the run and explain what happened in the notebook. If you already ran the candidate, state this and present the explanation as retrospective. Do not invent an earlier prediction or commit history. A wrong expectation can receive full credit when the reasoning and reflection are sound.</p>
+<h2>Read the same decision protocol correctly</h2>
+<p>Every candidate uses the same threshold-selection rule on development: at most 10% of opportunities may trigger an alert; maximise distinct eligible pit entries detected, with precision and threshold as tie-breakers. The selected threshold may differ between candidates. Compare the resulting model and alert policy; do not attribute every change in alerts to the model parameter alone. Ties can leave some budget unused. Never alert is the reference with zero alerts.</p>
+<p>The primary measure is event recall: distinct eligible entries caught / distinct eligible entries represented by positive opportunities. Precision is TP / alerts and is undefined when there are no alerts. Multiple positive windows can refer to one entry. The notebook starts with a small illustrative check and a compact development table; the complete table also contains TP, FP, FN, TN, alert rate, thresholds and both event counts. AP is optional supplementary evidence.</p>
+<p>Reuse each candidate's development-selected threshold unchanged on train. The 10% budget is for development only. Train metrics are in-sample; development was used for threshold selection and comparison. Neither is an untouched final test. A train/dev gap alone does not prove its cause. A score is not demonstrated to be a calibrated probability.</p>
+<h2>Examine three failure patterns without changing the experiment</h2>
+<p>After the additional run, “5. Explain three distinct failure patterns” shows your candidate's development predictions and descriptive tables by compound and circuit. You may inspect other permitted context columns in that same exported table. Keep the candidate and its threshold frozen; this step describes errors and does not select another model or segment-specific threshold.</p>
+<p>In the notebook, complete three short entries. For each, state: the error type and context rule, an error count with its relevant denominator, at least one <code>opportunity_id</code> from the exported predictions, the operational consequence and one useful next check. Explain whether a proposed cause is observed or only a hypothesis. Three isolated examples of the same pattern do not constitute three modes of failure. Patterns may overlap; state this and do not sum their counts as distinct errors. A small subgroup is a limitation, not proof of a general effect. Never invent a pattern to fill the table; if evidence is insufficient, document what you checked and flag the gap.</p>
+<p>Choose the denominator that answers your question: FP/alerts is the fraction of alerts that are false; FP/(FP+TN) is FPR over negative windows; FN/(TP+FN) is <code>miss_rate</code> over positive windows. A zero denominator is undefined. Section 5 includes a denominator dictionary, a worked fictional entry and editable queries for context/error and whole-event checks.</p>
+<p>The same error type in different contexts can count as separate patterns when each entry states its context rule, gives its own count/denominator and traceable case, and explains a consequence and next check. Three cases of the same error in the same context count as one pattern. Changing only a context name without evidence and interpretation is incomplete. You do not need three different causes, independent groups or statistical significance. Declare overlap; do not add overlapping counts as distinct errors.</p>
+<p>These are window-level context tables: <code>positive_windows</code> counts positive opportunities, not distinct entries. A false alert is an FP window. A missed event requires checking that none of its positive windows was alerted; a single FN window is not enough. Use the supplied event table to check this distinction.</p>
+<h2>Write the memo for its reader</h2>
+<p>Write <code>memo.md</code> for a Head of Strategy who understands racing but does not know ML. At most one printed page, using normal margins and readable 11–12 pt text; about 400 words is a guide, not a guarantee of one page. No PDF is required: check print preview and submit the Markdown source. The optional sentence frame in the template helps organise the argument without deciding it for you.</p>
+<p>Explain what decision the alert could support, compare actual results with denominators, recommend use/further checking/deferral, state a concrete limitation and propose a next check. Select the most relevant finding; the three full error entries stay in the notebook. Do not claim positions gained, seconds saved, causal effects or calibrated probabilities from these results. Grammar is not graded. Short notebook reasoning may be in English or Spanish; memo and code labels should be readable in English. See <code>GLOSSARY.md</code>.</p>
+<h2>Common AI audit and truthful use record</h2>
+<p>An assistant recommends:</p>
+<blockquote>
+<p>Use the 2026 results to choose the forest setting and alert threshold. Then report that same 2026 score as an independent final test, because the training data still end in 2021.</p>
+</blockquote>
+<p>In <code>PROMPTS.md</code>, respond in at most five short lines: accept/reject, methodological reason and a precise checkable cell/function/output in your own repository. This audit is required even if you used no AI. Do not obtain or run 2026 data to answer.</p>
+<p>Also record the tool used or “No AI used for this lab”. If used, connect one actual suggestion with what you accepted/rejected, the exact verification and notebook evidence, and a relevant limitation. Do not invent a failed suggestion or interaction. Both contributors must name a concrete action and related file/cell. A truthful no-use record can earn full use-record points; there is no prompt quota.</p>
+<h2>What is supplied and what you submit</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Files or work</th>
+<th>Your responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supplied</td>
+<td>Data CSV/manifest, support modules, requirements, brief, rubric, glossary and checklist</td>
+<td>Keep the supplied data and protocol; use relative paths.</td>
+</tr>
+<tr>
+<td>Complete</td>
+<td>Notebook reasoning cells, <code>experiment_spec.md</code>, <code>memo.md</code>, <code>PROMPTS.md</code>, environment/run instructions in <code>README.md</code></td>
+<td>Supply your reasoning and record your actual work.</td>
+</tr>
+<tr>
+<td>Generated</td>
+<td><code>comparison_table.md</code>; <code>outputs/comparison_v3.csv</code>, <code>run_manifest_v3.json</code>, <code>development_predictions_v3.csv</code>, <code>context_errors_v3.csv</code>, <code>event_errors_v3.csv</code></td>
+<td>Run the export block under “5. Explain three distinct failure patterns”, inspect them and commit the current files. Do not transcribe the comparison manually.</td>
+</tr>
+</tbody>
+</table>
+<p>Commit the executed notebook and all required supplied, completed and generated files. The starter contains five systems/ten rows and empty extra-candidate error exports. A completed run contains six systems/twelve rows and your candidate's error evidence. <code>experiment_complete: true</code> confirms that the additional run occurred; it does not certify the accuracy of your interpretation or the completion of your texts.</p>
+<p>Canvas provides the official timestamp. Submit both names, accessible GitHub URL, final commit and notebook path. Check instructor access to that exact commit before the deadline; an invitation still awaiting acceptance is not verified access.</p>
+<h2>Rubric and feedback</h2>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th style="text-align: right;">Points</th>
+<th>Evidence you must make visible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1 Valid comparison</td>
+<td style="text-align: right;">25</td>
+<td>Valid timing/inputs; one controlled candidate; correct policy and denominators.</td>
+</tr>
+<tr>
+<td>C2 Technical reasoning</td>
+<td style="text-align: right;">35</td>
+<td>Mechanism tied to base/change numbers; three supported failure patterns; bounded recommendation and limits.</td>
+</tr>
+<tr>
+<td>C3 Memo for its audience</td>
+<td style="text-align: right;">15</td>
+<td>Accurate evidence translated into a concise, understandable recommendation and next check.</td>
+</tr>
+<tr>
+<td>C4 Reproducibility</td>
+<td style="text-align: right;">15</td>
+<td>Accessible commit, fresh run and agreement across the submitted artefacts.</td>
+</tr>
+<tr>
+<td>C5 Traceability and critical AI use</td>
+<td style="text-align: right;">10</td>
+<td>Common audit 5; truthful use/no-use and verification 3; concrete contributions 2.</td>
+</tr>
+</tbody>
+</table>
+<p>See <code>RUBRIC_Lab03_v3.md</code> for components and anchors. A supplied table, manifest or polished log does not automatically earn the strongest band. A losing additional model can earn full marks.</p>
+<p>Before submitting, use the ungraded “Use your feedback next time” cell to revisit one relevant comment from Lab 2, or identify a weakness yourself if no comment applies. After grading, use the concrete next action in your Lab 3 feedback to improve the capstone experiment plan. No additional oral interview is part of this lab.</p><h2>Detailed rubric</h2><h1>Lab 3 rubric</h1>
+<p>100 points. Grade the evidence and explanation, including a technically justified negative result. Correctly running supplied code is necessary evidence but does not demonstrate independent design or understanding by itself. Retain the same 25/35/15/15/10 weights.</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Components</th>
+<th>Strong evidence</th>
+<th>Partial evidence</th>
+<th>Limited evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1 Valid and controlled comparison /25</td>
+<td>Prediction timing and permitted inputs 7; unchanged controls and one allowed candidate 8; policy and window/event denominators 10.</td>
+<td>23–25: the executed comparison is valid and the pair identifies the target, time, inputs, controls and denominators correctly.</td>
+<td>14–22: mainly valid comparison with a specific control, policy or denominator omission.</td>
+<td>0–13: leakage, altered populations, uncontrolled changes or unusable comparison.</td>
+</tr>
+<tr>
+<td>C2 Technical reasoning /35</td>
+<td>Base comparison and mechanism 7; additional candidate versus parent with at least two actual numbers 10; three distinct supported failure patterns 12 (4 each); bounded recommendation and selection/timing limits 6.</td>
+<td>32–35: technically sound mechanism tied to actual results; three supported patterns; observations separated from hypotheses; defensible decision with limits.</td>
+<td>20–31: some actual evidence and plausible reasoning, but a mechanism, pattern, denominator or decision is incomplete.</td>
+<td>0–19: generic claims, unsupported patterns, contradiction with results, or claims of independence/calibration/strategy gains not established.</td>
+</tr>
+<tr>
+<td>C3 Memo for its audience /15</td>
+<td>Understandable audience/language 5; relevant accurately translated evidence and denominators 4; coherent recommendation, limitation and next check 4; one-page scope 2.</td>
+<td>14–15: reader can understand the recommendation, evidence and limits without decoding ML jargon; concise and within scope.</td>
+<td>8–13: mostly accurate but audience, structure, evidence, next step or concision needs work.</td>
+<td>0–7: absent, generic, materially inaccurate or not understandable to the stated reader.</td>
+</tr>
+<tr>
+<td>C4 Reproducibility and consistency /15</td>
+<td>Accessible final commit and sufficient environment/run instructions 6; fresh execution including the additional candidate and error exports 5; agreement of notebook, CSV, generated table and memo 4.</td>
+<td>14–15: submitted version can be reconstructed and checked; artefacts agree and paths are portable.</td>
+<td>8–13: identifiable executed evidence with a recoverable setup or limited consistency omission.</td>
+<td>0–7: reproduction blocked by missing essential material or materially unsupported/inconsistent numbers.</td>
+</tr>
+<tr>
+<td>C5 Traceability and critical AI use /10</td>
+<td>Correct common audit with precise repository evidence 5; truthful use/no-use and concrete verification when AI was used 3; both contributors with actions and locations 2.</td>
+<td>All components demonstrated. A truthful no-use record can receive all 3 use-record points.</td>
+<td>Award demonstrated components; generic verification or an audit without a precise citation is incomplete.</td>
+<td>Missing or false records do not earn their component points. Do not infer undisclosed use or authorship from style.</td>
+</tr>
+</tbody>
+</table>
+<h2>How to keep the criteria distinct</h2>
+<p>C1 judges whether the comparison and the explanation of its protocol are valid. C2 judges the technical account of what happened, including three failure patterns. C3 judges how that evidence is translated for the memo's reader. C4 checks whether the delivered version can actually be reproduced and whether its artefacts agree. C5 checks the stated audit, record and contributions.</p>
+<p>A failure-pattern entry earns its four points through a distinct error/context definition (1), a correct count/denominator and traceable example (2), and a bounded consequence/next check (1). A proposed cause must be marked as a hypothesis unless measured. An FN window is not automatically a missed event. Three copies of the same pattern do not meet the requirement. If evidence is insufficient, report the checks and limitation rather than inventing a pattern; grade the demonstrated evidence.</p>
+<p>The same error type in different contexts can count as separate patterns when each entry states its context rule, gives its own count/denominator and traceable case, and explains a consequence and next check. Three cases of the same error in the same context count as one pattern. Changing only a context name without evidence and interpretation is incomplete. You do not need three different causes, independent groups or statistical significance. Declare overlap; do not add overlapping counts as distinct errors.</p>
+<p>Fictional examples for interpreting the requirement (these are not Rival results):</p>
+<ul>
+<li>Acceptable entry A: “For context <code>compound == TOY_A</code>, 2 of 6 alerts are false (FP/alerts), including <code>toy-A-4</code>. These alerts require checking a rival that does not enter within the horizon; next check the neighbouring windows to see whether alerts repeat around the same situation. The six-alert sample is small.”</li>
+<li>Acceptable entry B: “For context <code>compound == TOY_B</code>, 3 of 10 alerts are false, including <code>toy-B-2</code>. The review burden also occurs here; next inspect the recorded timing around those cases before proposing a cause.” With their separate supporting rows, A and B count as two patterns even though both are FP. Your submission must provide the actual rows behind its own claims.</li>
+<li>Incomplete: “TOY_A has false alerts; TOY_B has false alerts; TOY_C has false alerts.” Context names alone supply neither counts/denominators nor cases, consequences or checks. Three IDs from TOY_A under the same rule also describe one pattern.</li>
+</ul>
+<h2>Calibration examples</h2>
+<ul>
+<li>A correct generated table with a generic “forests are better” paragraph can support the executed-protocol parts of C1/C4; it does not satisfy C2's mechanism and interpretation components.</li>
+<li>A technically sound memo full of undefined ML jargon loses audience points in C3. Do not also deduct C2 solely for that communication defect.</li>
+<li>An honestly losing additional candidate with a valid comparison, supported errors and a clear recommendation can reach the strongest band in every criterion.</li>
+<li>A copied number contradicted by the notebook affects C4 consistency. Apply a further consequence in C2 or C3 only if a distinct interpretation or recommendation is materially unsupported, and explain that consequence.</li>
+</ul>
+<p>Do not assign an automatic score cap merely because saved outputs are absent: examine the fresh run and the other evidence. Do not award maximum points solely for file presence. The execution flag confirms a run, not learning. A log that agrees with code demonstrates traceability, not independent authorship or individual mastery. No additional oral assessment or favourable model result is required.</p></main></html>

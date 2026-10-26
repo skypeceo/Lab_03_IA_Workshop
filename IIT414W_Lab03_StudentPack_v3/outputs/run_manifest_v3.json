@@ -1,0 +1,99 @@
+{
+  "protocol": "Lab03 v3",
+  "seed": 414,
+  "development_budget": 0.1,
+  "experiment_complete": true,
+  "change": {
+    "parent": "tree",
+    "parameter": "max_depth",
+    "old": 3,
+    "new": 6,
+    "model_id": "tree__max_depth_6",
+    "changed_parameters": [
+      "model__max_depth"
+    ]
+  },
+  "completion_note": "Execution only; reasoning, error analysis and memo must be checked separately",
+  "generated_sha256": {
+    "development_predictions_v3.csv": "b484ec06bf85b2d5bc53445b654e797595f8f98c742a8f0b7704605daf46a0a0",
+    "context_errors_v3.csv": "b7ac1df459be2fe8fa2405716899145bb6748ff45cbbb655f5b3f574fb0093df",
+    "event_errors_v3.csv": "8aed8b79009d609ab6850118c85a58a654bdb76d21b6935589909134c3612dcb"
+  },
+  "comparison_markdown_sha256": "c8523eeecd7bf3b559ea1cc1ff11246767aa307730ddda4cda0869f47cb033dd",
+  "learning_sha256": "6782cfca5940fbe7683c8b03cdb8e5a9f2990f426dc7b8f3182eec32cd7f0b3f",
+  "comparison_sha256": "2faa9dda9b22a5e302d10a1fa3dcc729d608174e015a77b51df40d855bc46b98",
+  "support_sha256": {
+    "lab03_support_v3.py": "25c2d1294aaf7628103fa98e59a252c8fbe23a33865bbb02321f33ff581fa423",
+    "pitwindow_student_v2.py": "5e5369b7c43ce626273a7c3ca71de29644f88a2eb243df0cf73d5d711a6e1bf3"
+  },
+  "features": [
+    "circuit_id",
+    "compound",
+    "tyre_life",
+    "lap_number",
+    "progress",
+    "prior_pit_entries",
+    "pace_median_s",
+    "pace_slope_s_per_lap",
+    "pace_n"
+  ],
+  "threshold_selection": "dev only; reused unchanged on train",
+  "policies": {
+    "never_alert": {
+      "threshold": null,
+      "no_alerts": true
+    },
+    "historical_baseline": {
+      "threshold": 0.16192630412411937,
+      "no_alerts": false,
+      "alerts": 931,
+      "TP": 250,
+      "FP": 681,
+      "events_caught": 94,
+      "event_recall": 0.25405405405405407
+    },
+    "tree": {
+      "threshold": 0.7137351709562135,
+      "no_alerts": false,
+      "alerts": 571,
+      "TP": 154,
+      "FP": 417,
+      "events_caught": 63,
+      "event_recall": 0.17027027027027028
+    },
+    "forest_all": {
+      "threshold": 0.7181760719055627,
+      "no_alerts": false,
+      "alerts": 938,
+      "TP": 259,
+      "FP": 679,
+      "events_caught": 107,
+      "event_recall": 0.2891891891891892
+    },
+    "forest_sqrt": {
+      "threshold": 0.6082833509486985,
+      "no_alerts": false,
+      "alerts": 945,
+      "TP": 340,
+      "FP": 605,
+      "events_caught": 140,
+      "event_recall": 0.3783783783783784
+    },
+    "tree__max_depth_6": {
+      "threshold": 0.7903330837063,
+      "no_alerts": false,
+      "alerts": 580,
+      "TP": 145,
+      "FP": 435,
+      "events_caught": 57,
+      "event_recall": 0.15405405405405406
+    }
+  },
+  "python": "3.13.17",
+  "versions": {
+    "numpy": "2.0.2",
+    "pandas": "2.3.1",
+    "scikit-learn": "1.8.0",
+    "joblib": "1.4.2"
+  }
+}
