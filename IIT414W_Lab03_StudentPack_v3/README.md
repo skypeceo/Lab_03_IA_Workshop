@@ -1,4 +1,42 @@
-# Lab 3 start here
+# Lab 3: Rival Pit Window (our submission)
+
+## Our environment and run instructions
+
+**Repository layout.** The repository root is one level above this folder, so the notebook path is
+`IIT414W_Lab03_StudentPack_v3/Lab03_ModelComparison_Student_v3.ipynb`. All paths in the notebook are relative
+to `IIT414W_Lab03_StudentPack_v3/`, so open Jupyter/VS Code with that folder as the working directory.
+
+**Environment used for the final run** (copied from the output of the "Environment and data check" cell):
+- OS: Debian 13
+- Python: 3.13.5
+- numpy 2.5.3
+- pandas 3.0.6
+- sklearn 1.9.1
+- scipy 1.18.1
+- joblib 1.6.0
+
+**Steps we used (Linux):**
+
+```text
+cd IIT414W_Lab03_StudentPack_v3
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements_lab03_v3.txt
+.venv/bin/python -m ipykernel install --user --name iit414w-lab03-v3 --display-name "IIT414W Lab03 v3"
+```
+
+Then open `Lab03_ModelComparison_Student_v3.ipynb`, select the "IIT414W Lab03 v3" kernel and run
+**Kernel → Restart & Run All**. No internet is needed after installation. `.venv/` is excluded by `.gitignore`.
+
+**Expected result of a fresh run:** six systems / twelve train-dev rows in `comparison_table.md`;
+`"experiment_complete": true` in `outputs/run_manifest_v3.json`. The additional candidate is `tree__max_depth_6`
+(dev: 580 alerts, 57/370 entries caught). The data hash is checked by `load_learning`, and the seed is 414.
+
+**Other files:** `experiment_spec.md` (expectation recorded before the candidate run), `memo.md` (recommendation),
+`PROMPTS.md` (AI audit, use record and contributions).
+
+---
+
+## Original instructions (supplied)
 
 Due Thu 29 October 2026, 12:30 Santiago. Same pairs as Lab 2. 100 points, 6% NP.
 Read the short route in `IIT414W_Lab03_Brief_v3.md`; criterion components are in `RUBRIC_Lab03_v3.md`.
